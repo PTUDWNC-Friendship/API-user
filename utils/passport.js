@@ -31,7 +31,6 @@ passport.deserializeUser(function (user, done) {
 const facebook = new FacebookStrategy({
     clientID: constant.FACEBOOK_APP_ID,
     clientSecret: constant.FACEBOOK_APP_SECRET,
-    callbackURL: "/user/facebook/redirect",
     profileFields: ['id', 'displayName', 'first_name', 'last_name', 'photos', 'email', 'gender']
 },
     function (accessToken, refreshToken, profile, done) {
@@ -41,12 +40,14 @@ const facebook = new FacebookStrategy({
                 if(user) {
                     let _user = modelGenerator.toUserObject(user);
                     _user = {..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET)}
-                    return done(null, _user);
+                    console.log("EXISTS === : " ,_user);
+                    // return done(null, _user);
                 }
                 else {
                     let _user = modelGenerator.createUser(emails[0].value, "", firstName, lastName, gender, null, null, "facebook", null, null, photos[0].value, "active");
                     _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET)};
-                    return done(null, _user)                   
+                    console.log(_user);
+                    // return done(null, _user)                   
                 }
             })
             .catch(err => {

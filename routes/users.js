@@ -97,14 +97,14 @@ router.get("/google/redirect", (req, res, next) => {
   passport.authenticate(
     "google",
     { failureRedirect: "/login" },
-    (err, user) => {
+    (error, user) => {
       if (user) {
         res.redirect(url.format({
           pathname: `${constant.URL_CLIENT}/login`,
           query: user
         }));
       } else {
-        return res.json({ message: err });
+        return res.json({ message: "Error occured", error });
       }
     }
   )(req, res);
@@ -122,14 +122,14 @@ router.get("/facebook/redirect", (req, res, next) => {
   passport.authenticate(
     "facebook",
     { failureRedirect: "/login" },
-    (err, user) => {
+    (error, user) => {
       if (user) {
         res.redirect(url.format({
           pathname: `${constant.URL_CLIENT}/login`,
           query: user
         }));
       } else {
-        return res.json({ message: "Error occured" });
+        return res.json({ message: "Error occured", error });
       }
     }
   )(req, res);
