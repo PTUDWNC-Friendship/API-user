@@ -10,7 +10,7 @@ const tutorSchema = mongoose.Schema({
         type: Number,
         require: true
     },
-    subject: {
+    subjects: {
         type: Array,
         require: false
     },
@@ -20,4 +20,4 @@ const tutorSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('tutor', userSchema);
+module.exports = mongoose.model('tutor', tutorSchema);

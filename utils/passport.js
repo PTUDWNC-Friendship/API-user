@@ -1,7 +1,8 @@
 const constant = require('../utils/constant');
+const modelGenerator = require('../utils/model-generator');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwtExtension = require('jwt-simple');
+const jwtExtension = require('jsonwebtoken');
 const passport = require('passport');
 const passportJWT = require("passport-jwt");
 const passportLocal = require('passport-local');
@@ -15,6 +16,8 @@ const GoogleStrategy = passportGoogle.OAuth2Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 const UserModel = require('../models/user');
+const StudentModel = require('../models/student');
+const TutorModel = require('../models/tutor');
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -29,49 +32,21 @@ const facebook = new FacebookStrategy({
     clientID: constant.FACEBOOK_APP_ID,
     clientSecret: constant.FACEBOOK_APP_SECRET,
     callbackURL: "/user/facebook/redirect",
-    profileFields: ['id', 'displayName', 'photos', 'email', 'gender']
+    profileFields: ['id', 'displayName', 'first_name', 'last_name', 'photos', 'email', 'gender']
 },
     function (accessToken, refreshToken, profile, done) {
-        const { emails, displayName, photos, gender } = profile;
-        // console.log(profile);
+        const { emails, firstName, lastName, photos, gender } = profile;
         UserModel.findOne({ username: emails[0].value, type: "facebook" })
             .then(user => {
                 if(user) {
-                    let _user = {
-                        username: user.username,
-                        name: user.name,
-                        picture: user.picture,
-                        gender: user.gender,
-                        type: user.type
-                    };
-                    _user = {..._user, token: jwtExtension.encode(_user, constant.JWT_SECRET)}
-                    // console.log(_user);
+                    let _user = modelGenerator.toUserObject(user);
+                    _user = {..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET)}
                     return done(null, _user);
                 }
                 else {
-                    const newUser = new UserModel({
-                        _id: new mongoose.Types.ObjectId(),
-                        username: emails[0].value,
-                        gender: gender,
-                        name: displayName,
-                        type: "facebook",
-                        picture: photos[0].value
-                    })
-
-                    newUser.save()
-                        .then(result => {
-                            const _user = {
-                                username: result.username,
-                                name: result.name,
-                                gender: result.gender,
-                                type: result.type,
-                                picture: result.picture,
-                            };
-                            _user = {..._user, token: jwtExtension.encode(_user, constant.JWT_SECRET)}
-                            // console.log(_user);
-                            done(null, _user)
-                        })
-                        .catch(err => console.log(err));                    
+                    let _user = modelGenerator.createUser(emails[0].value, "", firstName, lastName, gender, null, null, "facebook", null, null, photos[0].value, "active");
+                    _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET)};
+                    return done(null, _user)                   
                 }
             })
             .catch(err => {
@@ -86,46 +61,19 @@ const google = new GoogleStrategy({
     callbackURL: "/user/google/redirect"
     },
     function (accessToken, refreshToken, tokenInfo, profile, done) {
-        // console.log(tokenInfo);
-        const { emails, displayName, photos } = profile;
+        const { emails, name, photos } = profile;
+        console.log(name);
         UserModel.findOne({ username: emails[0].value, type: "google" })
             .then(user => {
                 if(user) {
-                    const _user = {
-                        username: user.username,
-                        name: user.name,
-                        gender: user.gender,
-                        picture: user.picture,
-                        type: user.type,
-                        token: tokenInfo.id_token
-                    };
-                    console.log(_user);
+                    let _user = modelGenerator.toUserObject(user);
+                    _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET) }
                     return done(null, _user);
                 }
                 else {
-                    const newUser = new UserModel({
-                        _id: new mongoose.Types.ObjectId(),
-                        username: emails[0].value,
-                        name: displayName,
-                        type: "google",
-                        gender: "",
-                        picture: photos[0].value
-                    })
-
-                    newUser.save()
-                        .then(result => {
-                            const _user = {
-                                username: result.username,
-                                name: result.name,
-                                gender: result.gender,
-                                picture: result.picture,
-                                type: result.type,
-                                token: tokenInfo.id_token
-                            };
-                            console.log(_user);
-                            done(null, _user)
-                        })
-                        .catch(err => console.log(err));                    
+                    let _user = modelGenerator.createUser(emails[0].value, "", name.familyName, name.givenName, "male", null, null, "google", null, null, photos[0].value, "active");                  
+                    _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET) }
+                    return done(null, _user);
                 }
             })
             .catch(err => {
