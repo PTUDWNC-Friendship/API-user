@@ -114,7 +114,7 @@ router.get("/google/redirect", (req, res, next) => {
 router.get(
   "/facebook",
   passport.authenticate("facebook", {
-    scope: ["email", "user_photos"]
+    scope: ["email"]
   })
 );
 
