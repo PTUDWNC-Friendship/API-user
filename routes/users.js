@@ -104,7 +104,7 @@ router.get("/google/redirect", (req, res, next) => {
           query: user
         }));
       } else {
-        return res.json({ message: "Error occured" });
+        return res.json({ message: err });
       }
     }
   )(req, res);

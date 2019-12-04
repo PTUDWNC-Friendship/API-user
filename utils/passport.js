@@ -62,7 +62,7 @@ const google = new GoogleStrategy({
     },
     function (accessToken, refreshToken, tokenInfo, profile, done) {
         const { emails, name, photos } = profile;
-        console.log(name);
+        console.log(name.givenName);
         UserModel.findOne({ username: emails[0].value, type: "google" })
             .then(user => {
                 if(user) {
@@ -71,7 +71,7 @@ const google = new GoogleStrategy({
                     return done(null, _user);
                 }
                 else {
-                    let _user = modelGenerator.createUser(emails[0].value, "", name.familyName, name.givenName, "male", null, null, "google", null, null, photos[0].value, "active");                  
+                    let _user = modelGenerator.createUser(emails[0].value, "", name.familyName, name.givenName, "male", null, null, "google", null, null, photos[0].value, "active");          
                     _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET) }
                     return done(null, _user);
                 }

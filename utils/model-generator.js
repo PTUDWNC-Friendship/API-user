@@ -21,8 +21,8 @@ module.exports = {
             imageURL: imageURL,
             status: status
         })
-        user.save().catch(error => { console.log(error) })
-        return user;
+        user.save().then(result => { return result; }).catch(error => { console.log(error) })
+        return user._doc;
     },
     toUserObject: (user) => {
         return {
