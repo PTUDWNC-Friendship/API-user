@@ -19,6 +19,7 @@ require('./utils/passport');
 
 mongoose.connect(constant.CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
 
+
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -31,7 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 //Rourter
-app.use('/',passport.authenticate('jwt', {session: false}), indexRouter);
+  app.use('/', indexRouter);
+ //app.use('/',passport.authenticate('jwt', {session: false}), indexRouter);
 app.use('/user', usersRouter);
 
 // Catch 404 and forward to error handler
