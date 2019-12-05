@@ -86,13 +86,15 @@ const jwt = new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: constant.JWT_SECRET
 },
-    function (jwtPayload, done) {
+
+    function (jwtPayload, cb) {
         return UserModel.findById(jwtPayload._id)
             .then(user => {
-                return done(null, user);
+                console.log(user);
+                return cb(null, true, user);
             })
             .catch(err => {
-                return done(err);
+                return cb(err);
             });
     }
 );
@@ -119,6 +121,7 @@ const local = new LocalStrategy({
             .catch(err => done(err));
     }
 );
+
 
 passport.use(jwt);
 passport.use(local);
