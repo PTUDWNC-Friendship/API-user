@@ -31,9 +31,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-//Rourter
-  app.use('/', indexRouter);
- //app.use('/',passport.authenticate('jwt', {session: false}), indexRouter);
+//Router
+app.use('/', indexRouter);
 app.use('/user', usersRouter);
 
 // Catch 404 and forward to error handler

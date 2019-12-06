@@ -90,7 +90,6 @@ const jwt = new JWTStrategy({
     function (jwtPayload, cb) {
         return UserModel.findById(jwtPayload._id)
             .then(user => {
-                console.log(user);
                 return cb(null, true, user);
             })
             .catch(err => {
