@@ -99,10 +99,15 @@ router.get("/google/redirect", (req, res, next) => {
     { failureRedirect: "/login" },
     (error, user) => {
       if (user) {
-        res.redirect(url.format({
-          pathname: `${constant.URL_CLIENT}/login`,
-          query: user
-        }));
+        req.login(user, {session: false}, err => {
+          if (err) {
+            res.send(err);
+          }
+          res.redirect(url.format({
+            pathname: `${constant.URL_CLIENT}/login`,
+            query: user
+          })); 
+        })
       } else {
         return res.json({ message: "Error occured", error });
       }
@@ -124,10 +129,15 @@ router.get("/facebook/redirect", (req, res, next) => {
     { failureRedirect: "/login" },
     (error, user) => {
       if (user) {
-        res.redirect(url.format({
-          pathname: `${constant.URL_CLIENT}/login`,
-          query: user
-        }));
+        req.login(user, {session: false}, err => {
+          if (err) {
+            res.send(err);
+          }
+          res.redirect(url.format({
+            pathname: `${constant.URL_CLIENT}/login`,
+            query: user
+          }));
+        });
       } else {
         return res.json({ message: "Error occured", error });
       }
