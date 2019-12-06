@@ -36,6 +36,7 @@ const facebook = new FacebookStrategy({
 },
     function (accessToken, refreshToken, profile, done) {
         const { emails, firstName, lastName, photos, gender } = profile;
+        console.log(profile);
         UserModel.findOne({ username: emails[0].value, type: "facebook" })
             .then(user => {
                 if(user) {

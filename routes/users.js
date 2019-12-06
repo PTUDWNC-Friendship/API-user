@@ -1,14 +1,15 @@
-
 const express = require("express");
 const router = express.Router();
 const UserModel = require("../models/user");
+const StudentModel = require("../models/student");
+const TutorModel = require("../models/tutor");
 const mongoose = require("mongoose");
 const constant = require("../utils/constant");
 const bcrypt = require("bcrypt");
-const modelGenerator = require('../utils/model-generator');
+const modelGenerator = require("../utils/model-generator");
 const jwtExtension = require("jsonwebtoken");
 const passport = require("passport");
-const url = require('url');
+const url = require("url");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -24,9 +25,11 @@ router.post("/login", (req, res, next) => {
       }
 
       var data = modelGenerator.toUserObject(user);
-      data = { ...data, token: jwtExtension.sign(user.toJSON(), constant.JWT_SECRET) };
+      data = {
+        ...data,
+        token: jwtExtension.sign(user.toJSON(), constant.JWT_SECRET)
+      };
       return res.json(data);
-      
     });
   })(req, res);
 });
@@ -43,7 +46,20 @@ router.post("/register", (req, res) => {
       bcrypt
         .hash(password, saltRounds)
         .then(hash => {
-          const user = modelGenerator.createUser(username, hash, firstName, lastName, gender, null, null, "local", null, null, imgURL, "active");
+          const user = modelGenerator.createUser(
+            username,
+            hash,
+            firstName,
+            lastName,
+            gender,
+            null,
+            null,
+            "local",
+            null,
+            null,
+            imgURL,
+            "active"
+          );
           const objectStudent = modelGenerator.toUserObject(user);
           res.send(objectStudent);
         })
@@ -54,35 +70,127 @@ router.post("/register", (req, res) => {
   });
 });
 
-router.post("/update", (req, res) => {
-  var { username, name, gender, password, picture, type } = req.body;
-  const saltRounds = 10;
-  UserModel.findOne({ username, type: type }).then(user => {
-    if (user) {
-      user.name = name;
-      user.gender = gender;
-      user.picture = picture;
-      user.type = type;
+router.post("/student/register", async (req, res) => {
+  var user = await UserModel.findById({ _id: req.body._id });
+  if (user) {
+    user.role = "student";
+    user.save().catch(err => console.log(err));
+    modelGenerator.createStudent(user._id, null);
+    const data = modelGenerator.toUserObject(user);
+    res.json(data);
+  }
+});
 
-      if (password === "" || type === "facebook" || type === "google") {
-        user.save()
-          .then(result => res.json(result) )
-          .catch(err => console.log(err));
-      } else {
-        bcrypt
-          .hash(password, saltRounds)
-          .then(hash => {
-            user.password = hash;
-            user.save()
-              .then(result => { res.json(result) })
-              .catch(err => console.log(err));
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
+router.post("/tutor/register", async (req, res) => {
+  var user = await UserModel.findById({ _id: req.body._id });
+  if (user) {
+    user.role = "tutor";
+    user.save().catch(err => console.log(err));
+    modelGenerator.createTutor(user._id, null, null, null, null);
+    const data = modelGenerator.toUserObject(user);
+    res.json(data);
+  }
+});
+
+router.post("/update", async (req, res) => {
+  var { _id, password, type } = req.body;
+  const saltRounds = 10;
+  var user = await UserModel.findById({ _id: _id });
+
+  if (user) {
+    for (var key in req.body) {
+      if (user[key] === req.body[key]) continue;
+      user[key] = req.body[key];
     }
-  });
+    if (password === "" || type === "facebook" || type === "google") {
+      user
+        .save()
+        .then(result => res.json(result))
+        .catch(err => console.log(err));
+    } else {
+      var hash = await bcrypt.hash(password, saltRounds);
+      user.password = hash;
+      user
+        .save()
+        .then(result => {
+          res.json(result);
+        })
+        .catch(err => console.log(err));
+    }
+  }
+});
+
+router.post("/tutor/update", async (req, res) => {
+  var { _id } = req.body;
+  var tutor = await TutorModel.findById({ _id: _id });
+
+  if (tutor) {
+    for (var key in req.body) {
+      if (tutor[key] === req.body[key]) continue;
+      tutor[key] = req.body[key];
+
+      tutor
+        .save()
+        .then(result => {
+          res.json(result);
+        })
+        .catch(err => console.log(err));
+    }
+  }
+});
+
+router.post("/student/insert/hired-tutors", async (req, res) => {
+  var { _id, _idTutor } = req.body;
+  var student = await StudentModel.findById({ _id: _id });
+
+  if (student) {
+    if (student.hiredTutors == null) {
+      student.hiredTutors = mongoose.Types.Array([]);
+    }
+    student.hiredTutors = student.hiredTutors.concat(_idTutor);
+    student
+      .save()
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => console.log(err));
+  }
+});
+
+router.post("/tutor/insert/feedback", async (req, res) => {
+  var { _id, _idFeedback } = req.body;
+  var tutor = await TutorModel.findById({ _id: _id });
+
+  if (tutor) {
+    if (tutor.feedback == null) {
+      tutor.feedback = mongoose.Types.Array([]);
+    }
+    tutor.feedback = student.feedback.concat(_idFeedback);
+    tutor
+      .save()
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => console.log(err));
+  }
+});
+
+router.post("/tutor/insert/subject", async (req, res) => {
+  var { _id, _idSubject } = req.body;
+  var tutor = await TutorModel.findById({ _id: _id });
+
+  if (tutor) {
+    if (tutor.subjects == null) {
+      tutor.subjects = mongoose.Types.Array([]);
+    }
+    tutor.subjects = student.subjects.concat(_idSubject);
+    tutor
+      .save()
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => console.log(err));
+  }
 });
 
 // ==== GOOGLE ====
@@ -99,15 +207,17 @@ router.get("/google/redirect", (req, res, next) => {
     { failureRedirect: "/login" },
     (error, user) => {
       if (user) {
-        req.login(user, {session: false}, err => {
+        req.login(user, { session: false }, err => {
           if (err) {
             res.send(err);
           }
-          res.redirect(url.format({
-            pathname: `${constant.URL_CLIENT}/login`,
-            query: user
-          })); 
-        })
+          res.redirect(
+            url.format({
+              pathname: `${constant.URL_CLIENT}/login`,
+              query: user
+            })
+          );
+        });
       } else {
         return res.json({ message: "Error occured", error });
       }
@@ -119,24 +229,29 @@ router.get("/google/redirect", (req, res, next) => {
 router.get(
   "/facebook",
   passport.authenticate("facebook", {
-    scope: ["email"]
+    scope: ["email", "user_photos"]
   })
 );
 
 router.get("/facebook/redirect", (req, res, next) => {
   passport.authenticate(
     "facebook",
-    { failureRedirect: "/login" },
+    {
+      successRedirect: `${constant.URL_CLIENT}`,
+      failureRedirect: `${constant.URL_CLIENT}`
+    },
     (error, user) => {
       if (user) {
-        req.login(user, {session: false}, err => {
+        req.login(user, { session: false }, err => {
           if (err) {
             res.send(err);
           }
-          res.redirect(url.format({
-            pathname: `${constant.URL_CLIENT}/login`,
-            query: user
-          }));
+          res.redirect(
+            url.format({
+              pathname: `${constant.URL_CLIENT}/login`,
+              query: user
+            })
+          );
         });
       } else {
         return res.json({ message: "Error occured", error });
