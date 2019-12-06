@@ -82,7 +82,7 @@ router.post("/student/register", async (req, res) => {
 });
 
 router.post("/tutor/register", async (req, res) => {
-  var user = await UserModel.findById({ _id: req.body._id });
+  var user = await UserModel.findById({ _id: req.body.user._id });
   if (user) {
     user.role = "tutor";
     user.save().catch(err => console.log(err));
