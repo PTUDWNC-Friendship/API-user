@@ -11,6 +11,7 @@ var cookieSession = require('cookie-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var subjectsRouter = require('./routes/subjects');
+var tagsRouter = require('./routes/tags');
 
 var app = express();
 var constant = require('./utils/constant');
@@ -36,6 +37,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
 app.use('/subject', subjectsRouter);
+app.use('/tag', tagsRouter);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
