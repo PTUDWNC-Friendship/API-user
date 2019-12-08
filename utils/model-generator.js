@@ -4,6 +4,9 @@ const TutorModel = require('../models/tutor');
 const SubjectModel = require('../models/subject');
 const TagModel = require('../models/tag');
 const TagSubjectModel = require('../models/tag-subject');
+const FeedbackModel = require('../models/feedback');
+const ContractModel = require('../models/contract');
+const MessageModel = require('../models/message');
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -71,6 +74,43 @@ module.exports = {
         })
         tag.save().then(result => { return result; }).catch(error => { console.log(error) })
         return tag._doc;
+    },
+    createFeedback: (_idStudent, rate, comment) => {
+        var feedback = new FeedbackModel({
+            _id: new mongoose.Types.ObjectId(),
+            _idSubject: _idStudent,
+            rate: rate,
+            comment: comment
+        })
+        feedback.save().then(result => { return result; }).catch(error => { console.log(error) })
+        return feedback._doc;
+    },
+    createContract: (_idStudent, _idTutor, _idSubject, startDate, endDate, policy, totalPrice, revenue, message, status) => {
+        var contract = new ContractModel({
+            _id: new mongoose.Types.ObjectId(),
+            _idStudent: _idStudent,
+            _idSubject: _idSubject,
+            _idTutor: _idTutor,
+            startDate: startDate,
+            endDate: endDate,
+            policy: policy,
+            totalPrice: totalPrice,
+            revenue: revenue,
+            message: message,
+            status: status
+        })
+        contract.save().then(result => { return result; }).catch(error => { console.log(error) })
+        return contract._doc;
+    },
+    createMessage: (_idSender, _idRecipient, contents) => {
+        var message = new MessageModel({
+            _id: new mongoose.Types.ObjectId(),
+            _idSender: _idSender,
+            _idRecipient: _idRecipient,
+            contents: contents
+        })
+        message.save().then(result => { return result; }).catch(error => { console.log(error) })
+        return message._doc;
     },
     toUserObject: (user) => {
         return {

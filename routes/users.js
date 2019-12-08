@@ -34,6 +34,11 @@ router.post("/login", (req, res, next) => {
   })(req, res);
 });
 
+router.get("/api", async (req, res) => {
+  let list = await UserModel.find();
+  res.json(list);
+});
+
 router.post("/register", (req, res) => {
   var { username, firstName, lastName, gender, password } = req.body;
   var imgURL = `${req.protocol}://${req.get("host")}/images/no-avatar.png`;

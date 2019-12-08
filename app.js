@@ -12,6 +12,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var subjectsRouter = require('./routes/subjects');
 var tagsRouter = require('./routes/tags');
+var feedbackRouter = require('./routes/feedback');
+var contractsRouter = require('./routes/contracts');
+var messagesRouter = require('./routes/messages');
 
 var app = express();
 var constant = require('./utils/constant');
@@ -38,6 +41,9 @@ app.use('/', indexRouter);
 app.use('/user', usersRouter);
 app.use('/subject', subjectsRouter);
 app.use('/tag', tagsRouter);
+app.use('/feedback', feedbackRouter);
+app.use('/contract', contractsRouter);
+app.use('/message', messagesRouter);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {

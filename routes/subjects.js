@@ -5,6 +5,11 @@ const SubjectModel = require('../models/subject');
 const TagSubjectModel = require('../models/tag-subject');
 const modelGenerator = require("../utils/model-generator");
 
+router.get("/api", async (req, res) => {
+    let list = await SubjectModel.find();
+    res.json(list);
+});
+
 router.post("/insert", async (req, res) => {
     let { name, category, description }  = req.body;
     var _subject = await SubjectModel.findOne({name: name});
