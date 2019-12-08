@@ -10,6 +10,12 @@ router.get("/api", async (req, res) => {
     res.json(list);
 });
 
+router.get("/api/:id", async (req, res) => {
+    let { id } = req.params;
+    let result = await TagModel.findOne({_id: id});
+    res.json(result);
+});
+
 router.post("/insert", async (req, res) => {
     let { name }  = req.body;
     var _tag = await TagModel.findOne({name: name});

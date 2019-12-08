@@ -10,6 +10,12 @@ router.get("/api", async (req, res) => {
     res.json(list);
 });
 
+router.get("/api/:id", async (req, res) => {
+    let { id } = req.params;
+    let result = await SubjectModel.findOne({_id: id});
+    res.json(result);
+});
+
 router.post("/insert", async (req, res) => {
     let { name, category, description }  = req.body;
     var _subject = await SubjectModel.findOne({name: name});

@@ -9,6 +9,18 @@ router.get("/api", async (req, res) => {
     res.json(list);
 });
 
+router.get("/api/:id", async (req, res) => {
+    let { id } = req.params;
+    let result = await FeedbackModel.findOne({_id: id});
+    res.json(result);
+});
+
+router.get("/:idStudent", async (req, res) => {
+    let { idStudent } = req.params;
+    let list = await FeedbackModel.find({_idStudent: idStudent});
+    res.json(list);
+});
+
 router.post("/insert", async (req, res) => {
     let { _idStudent, rate, comment }  = req.body;
     var feedback = modelGenerator.FeedbackModel(_idStudent, rate, comment);

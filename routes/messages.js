@@ -10,6 +10,18 @@ router.get("/api", async (req, res) => {
     res.json(list);
 });
 
+router.get("/api/:id", async (req, res) => {
+    let { id } = req.params;
+    let result = await MessageModel.findOne({_id: id});
+    res.json(result);
+});
+
+router.get("/sender/:idSender", async (req, res) => {
+    let { idSender } = req.params;
+    let list = await MessageModel.find({_idSender: idSender});
+    res.json(list);
+});
+
 router.post("/insert", async (req, res) => {
     let { _idSender, _idRecipient, contents }  = req.body;
     var message = modelGenerator.createMessage(_idSender, _idRecipient, contents);

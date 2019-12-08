@@ -10,6 +10,24 @@ router.get("/api", async (req, res) => {
     res.json(list);
 });
 
+router.get("/api/:id", async (req, res) => {
+    let { id } = req.params;
+    let result = await ContractModel.findOne({_id: id});
+    res.json(result);
+});
+
+router.get("/tutor/:idStudent", async (req, res) => {
+    let { idStudent } = req.params;
+    let list = await ContractModel.find({_idStudent: idStudent});
+    res.json(list);
+});
+
+router.get("/student/:idTutor", async (req, res) => {
+    let { idTutor } = req.params;
+    let list = await ContractModel.find({_idTutor: idTutor});
+    res.json(list);
+});
+
 router.post("/insert", async (req, res) => {
     let { _idStudent, _idTutor, _idSubject, startDate, endDate, policy, totalPrice, revenue, message, status }  = req.body;
     var contract = modelGenerator.createContract(_idStudent, _idTutor, _idSubject, startDate, endDate, policy, totalPrice, revenue, message, status);
@@ -33,5 +51,6 @@ router.delete("/delete", async (req, res) => {
     let result = await ContractModel.deleteOne({_id: req.body._id});
     result.deletedCount === 0 ? res.json(false) : res.json(true);
 })
+
 
 module.exports = router;
