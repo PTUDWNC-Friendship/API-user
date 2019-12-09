@@ -45,7 +45,7 @@ router.get("/api/:id", async (req, res) => {
   res.json(result);
 });
 
-router.get("/api/tutors", async (req,res)=>{
+router.get("/get-all-tutors", async (req,res)=>{
   let tutors = await UserModel.find({role: "tutor"});
   let result = [];
   tutors.forEach(tutor => {
@@ -54,7 +54,7 @@ router.get("/api/tutors", async (req,res)=>{
   res.json(result);
 })
 
-router.get("/api/students", async (req,res)=>{
+router.get("/get-all-students", async (req,res)=>{
   let students = await UserModel.find({role: "student"});
   let result = [];
   students.forEach(student => {
