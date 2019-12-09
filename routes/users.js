@@ -47,12 +47,20 @@ router.get("/api/:id", async (req, res) => {
 
 router.get("/api/tutors", async (req,res)=>{
   let tutors = await UserModel.find({role: "tutor"});
-  res.json(tutors);
+  let result = [];
+  tutors.forEach(tutor => {
+    result.push(modelGenerator.toTutorObject(tutor));
+  })
+  res.json(result);
 })
 
 router.get("/api/students", async (req,res)=>{
   let students = await UserModel.find({role: "student"});
-  res.json(students);
+  let result = [];
+  students.forEach(student => {
+    result.push(modelGenerator.toStudentObject(student));
+  })
+  res.json(result);
 })
 
 router.get("/api/:idTutor/students", async (req,res)=>{
