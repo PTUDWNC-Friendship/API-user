@@ -55,6 +55,32 @@ router.get("/api/students", async (req,res)=>{
   res.json(students);
 })
 
+router.get("/api/:idTutor/students", async (req,res)=>{
+  let { idTutor } = req.params;
+  var listStudents = [];
+  let students = await UserModel.find({role: "student"});
+  students.forEach(student => {
+    var hiredTutors = student.hiredTutors;
+    hiredTutors.forEach(_idTutor => {
+      if (_idTutor === idTutor) {
+        listStudents.push(modelGenerator.toStudentObject(student));
+      }
+    })
+  })
+  res.json(listStudents);
+})
+
+router.get("/api/:idStudent/tutors", async (req,res)=>{
+  let { idStudent } = req.params;
+  let listTutors = [];
+  let student = await UserModel.findOne({_id: idStudent});
+  student.hiredTutors.forEach(idTutor => {
+    const tutor = await TutorModel.findOne({_id: idTutor});
+    listTutors.push(modelGenerator.toTutorObject(tutor));
+  })
+  res.json(listStudents);
+})
+
 router.post("/register", (req, res) => {
   var { username, firstName, lastName, gender, password } = req.body;
   var imgURL = `${req.protocol}://${req.get("host")}/images/no-avatar.png`;
