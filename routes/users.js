@@ -45,6 +45,16 @@ router.get("/api/:id", async (req, res) => {
   res.json(result);
 });
 
+router.get("/api/tutors", async (req,res)=>{
+  let tutors = await UserModel.find({role: "tutor"});
+  res.json(tutors);
+})
+
+router.get("/api/students", async (req,res)=>{
+  let students = await UserModel.find({role: "student"});
+  res.json(students);
+})
+
 router.post("/register", (req, res) => {
   var { username, firstName, lastName, gender, password } = req.body;
   var imgURL = `${req.protocol}://${req.get("host")}/images/no-avatar.png`;
@@ -203,19 +213,6 @@ router.post("/tutor/insert/subject", async (req, res) => {
       .catch(err => console.log(err));
   }
 });
-// ====get tutors===
-
-router.get("/list-all-tutors", async(req,res)=>{
-  UserModel.find({},function(err,users){
-    var listTutors = [];
-    users.forEach(element =>{
-      if(element.role=="tutor") {
-        listTutors.push(element);
-      }
-    })
-    res.json(listTutors);
-  })
-})
 
 // ==== GOOGLE ====
 router.get(
