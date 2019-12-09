@@ -203,6 +203,19 @@ router.post("/tutor/insert/subject", async (req, res) => {
       .catch(err => console.log(err));
   }
 });
+// ====get tutors===
+
+router.get("/list-all-tutors", async(req,res)=>{
+  UserModel.find({},function(err,users){
+    var listTutors = [];
+    users.forEach(element =>{
+      if(element.role=="tutor") {
+        listTutors.push(element);
+      }
+    })
+    res.json(listTutors);
+  })
+})
 
 // ==== GOOGLE ====
 router.get(
