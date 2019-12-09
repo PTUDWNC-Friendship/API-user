@@ -118,7 +118,7 @@ module.exports = {
             username: user.username,
             password: user.password,
             firstName: user.firstName,
-            lastname: user.lastname,
+            lastname: user.lastName,
             gender: user.gender,
             address: user.address,
             phone: user.phone,
