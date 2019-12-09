@@ -10,13 +10,13 @@ const MessageModel = require('../models/message');
 const mongoose = require('mongoose');
 
 module.exports = {
-    createUser: (username, password, firstName, lastname, gender, address, phone, type, role, bio, imageURL, status) => {
+    createUser: (username, password, firstName, lastName, gender, address, phone, type, role, bio, imageURL, status) => {
         var user = new UserModel({
             _id: new mongoose.Types.ObjectId(),
             username: username,
             password: password,
             firstName: firstName,
-            lastname: lastname,
+            lastName: lastName,
             gender: gender,
             address: address,
             phone: phone,
