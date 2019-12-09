@@ -83,7 +83,7 @@ router.get("/api/:idStudent/tutors", async (req,res)=>{
   let listTutors = [];
   let student = await UserModel.findOne({_id: idStudent});
   student.hiredTutors.forEach(idTutor => {
-    const tutor = await TutorModel.findOne({_id: idTutor});
+    const tutor =  TutorModel.findOne({_id: idTutor});
     listTutors.push(modelGenerator.toTutorObject(tutor));
   })
   res.json(listStudents);
