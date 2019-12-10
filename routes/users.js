@@ -48,18 +48,20 @@ router.get("/api/:id", async (req, res) => {
 router.get("/get-all-tutors", async (req,res)=>{
   let tutors = await UserModel.find({role: "tutor"});
   let result = [];
-  tutors.forEach(tutor => {
-    result.push(modelGenerator.toTutorObject(tutor));
-  })
+  for (var tutor of tutors) {
+    const temp = await modelGenerator.toTutorObject(tutor);
+    result.push(temp);
+  }
   res.json(result);
 })
 
 router.get("/get-all-students", async (req,res)=>{
   let students = await UserModel.find({role: "student"});
   let result = [];
-  students.forEach(student => {
-    result.push(modelGenerator.toStudentObject(student));
-  })
+  for (var student of students) {
+    const temp = await modelGenerator.toStudentObject(student);
+    result.push(temp);
+  }
   res.json(result);
 })
 
