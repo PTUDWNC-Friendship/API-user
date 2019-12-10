@@ -164,7 +164,7 @@ router.post("/update", async (req, res) => {
         .save()
         .then(result => res.json(result))
         .catch(err => console.log(err));
-    } else {
+    } else if (user.password !== req.body.password) {
       var hash = await bcrypt.hash(password, saltRounds);
       user.password = hash;
       user
