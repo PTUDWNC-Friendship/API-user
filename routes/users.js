@@ -156,7 +156,7 @@ router.post("/update", async (req, res) => {
 
   if (user) {
     for (var key in req.body) {
-      if (user[key] === req.body[key]) continue;
+      if (user[key] === req.body[key]||(key==="password")) continue;
       user[key] = req.body[key];
     }
     if (password === "" || type === "facebook" || type === "google") {
@@ -185,14 +185,13 @@ router.post("/tutor/update", async (req, res) => {
     for (var key in req.body) {
       if (tutor[key] === req.body[key]) continue;
       tutor[key] = req.body[key];
-
-      tutor
-        .save()
-        .then(result => {
-          res.json(result);
-        })
-        .catch(err => console.log(err));
     }
+    tutor
+    .save()
+    .then(result => {
+      res.json(result);
+    })
+    .catch(err => console.log(err));
   }
 });
 

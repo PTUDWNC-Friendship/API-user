@@ -227,25 +227,25 @@ module.exports = {
     return null;
   },
   toTutorObject: async _tutor => {
-    let tutor = await UserModel.findOne({ _id: _tutor._id });
+    let tutor = await TutorModel.findOne({ _id: _tutor._id });
     var object = {
-      _id: tutor._id,
-      username: tutor.username,
-      password: tutor.password,
-      firstName: tutor.firstName,
-      lastName: tutor.lastName,
-      gender: tutor.gender,
-      address: tutor.address,
-      phone: tutor.phone,
-      type: tutor.type,
-      role: tutor.role,
-      bio: tutor.bio,
-      imageURL: tutor.imageURL,
-      status: tutor.status,
-      title: _tutor.title,
-      price: _tutor.price,
-      subjects: _tutor.subjects,
-      feedback: _tutor.feedback
+      _id: _tutor._id,
+      username: _tutor.username,
+      password: _tutor.password,
+      firstName: _tutor.firstName,
+      lastName: _tutor.lastName,
+      gender: _tutor.gender,
+      address: _tutor.address,
+      phone: _tutor.phone,
+      type: _tutor.type,
+      role: _tutor.role,
+      bio: _tutor.bio,
+      imageURL: _tutor.imageURL,
+      status: _tutor.activeStatus,
+      title: tutor.title,
+      price: tutor.price,
+      subjects: tutor.subjects,
+      feedback: tutor.feedback
     };
     return object;
   },
