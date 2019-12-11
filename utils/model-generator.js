@@ -202,29 +202,25 @@ module.exports = {
       status: user.status
     };
   },
-  toStudentObject: _student => {
-    UserModel.findOne({ _id: _student._id })
-      .then(student => {
-        var object = {
-          _id: student._id,
-          username: student.username,
-          password: student.password,
-          firstName: student.firstName,
-          lastName: student.lastName,
-          gender: student.gender,
-          address: student.address,
-          phone: student.phone,
-          type: student.type,
-          role: student.role,
-          bio: student.bio,
-          imageURL: student.imageURL,
-          status: student.status,
-          hiredTutors: _student.hiredTutors
-        };
-        return object;
-      })
-      .catch(error => console.log(error));
-    return null;
+  toStudentObject: async student => {
+    let _student = await StudentModel.findOne({ _id: student._id });
+    var object = {
+      _id: student._id,
+      username: student.username,
+      password: student.password,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      gender: student.gender,
+      address: student.address,
+      phone: student.phone,
+      type: student.type,
+      role: student.role,
+      bio: student.bio,
+      imageURL: student.imageURL,
+      status: student.status,
+      // hiredTutors: _student.hiredTutors
+    };
+    return object;
   },
   toTutorObject: async _tutor => {
     let tutor = await TutorModel.findOne({ _id: _tutor._id });
