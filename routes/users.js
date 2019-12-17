@@ -42,7 +42,17 @@ router.get("/api", async (req, res) => {
 router.get("/api/:id", async (req, res) => {
   let { id } = req.params;
   let result = await UserModel.findOne({_id: id});
-  res.json(result);
+  if (result.role === 'student') {
+    const student = await modelGenerator.toStudentObject(result);
+    res.json(student);
+  }
+  else if (result.role === 'tutor') {
+    const tutor = await modelGenerator.toTutorObject(result);
+    res.json(tutor);
+  }
+  else {
+    res.json(result);
+  }
 });
 
 router.get("/get-all-tutors", async (req,res)=>{
