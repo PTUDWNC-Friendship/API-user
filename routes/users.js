@@ -231,7 +231,7 @@ router.post("/tutor/insert/feedback", async (req, res) => {
     if (tutor.feedback == null) {
       tutor.feedback = mongoose.Types.Array([]);
     }
-    tutor.feedback = student.feedback.concat(_idFeedback);
+    tutor.feedback = tutor.feedback.concat(_idFeedback);
     tutor
       .save()
       .then(result => {
@@ -249,7 +249,7 @@ router.post("/tutor/insert/subject", async (req, res) => {
     if (tutor.subjects == null) {
       tutor.subjects = mongoose.Types.Array([]);
     }
-    tutor.subjects = student.subjects.concat(_idSubject);
+    tutor.subjects = tutor.subjects.concat(_idSubject);
     tutor
       .save()
       .then(result => {
