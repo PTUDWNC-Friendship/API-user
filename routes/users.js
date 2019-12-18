@@ -3,6 +3,8 @@ const router = express.Router();
 const UserModel = require("../models/user");
 const StudentModel = require("../models/student");
 const TutorModel = require("../models/tutor");
+const SubjectModel = require("../models/subject");
+const FeedbackModel = require("../models/feedback");
 const mongoose = require("mongoose");
 const constant = require("../utils/constant");
 const bcrypt = require("bcrypt");
@@ -89,6 +91,43 @@ router.get("/api/:idTutor/students", async (req,res)=>{
     })
   })
   res.json(listStudents);
+})
+
+router.get("/tutor/:idTutor/subjects",async  (req,res)=>{
+  let { idTutor } = req.params;
+  var listSubjects = [];
+  let tutor = await TutorModel.findOne({_id: idTutor});
+  const listSubjectsId = tutor.subjects;
+  for(var item of listSubjectsId) {
+    console.log('id', item);
+    let subject = await SubjectModel.findOne({_id: item});
+    listSubjects.push(subject);
+  }
+  res.json(listSubjects);
+})
+
+router.get("/tutor/:idTutor/feedbacks",async  (req,res)=>{
+  let { idTutor } = req.params;
+  var listFeedbacks = [];
+  let tutor = await TutorModel.findOne({_id: idTutor});
+  const listFeedbackId = tutor.feedback;
+  for(var item of listFeedbackId) {
+    let feedback = await FeedbackModel.findOne({_id: item});
+    listFeedbacks.push(feedback);
+  }
+  res.json(listFeedbacks);
+})
+
+router.get("/student/:idStudent/hiredTutors",async  (req,res)=>{
+  let { idStudent } = req.params;
+  var listHiredTutors = [];
+  let student = await StudentModel.findOne({_id: idTutor});
+  const listHiredTutorId = student.hiredTutors;
+  for(var item of listHiredTutorId) {
+    let tutor = await TutorModel.findOne({_id: item});
+    listHiredTutors.push(tutor);
+  }
+  res.json(listHiredTutors);
 })
 
 router.get("/api/:idStudent/tutors", async (req,res)=>{
