@@ -25,7 +25,18 @@ router.get("/tutor/:idStudent", async (req, res) => {
 router.get("/student/:idTutor", async (req, res) => {
     let { idTutor } = req.params;
     let list = await ContractModel.find({_idTutor: idTutor});
-    res.json(list);
+    console.log(list);
+    let listResult =[];
+    for(var item of list) {
+      const student = await UserModel.findOne({_id: item._idStudent});
+      const resultItem = {
+        ...item._doc,
+        student: {...student._doc}
+      }
+      
+      listResult.push(resultItem);
+    }
+    res.json(listResult);
 });
 
 router.post("/insert", async (req, res) => {
