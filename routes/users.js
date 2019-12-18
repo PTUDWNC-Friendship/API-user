@@ -81,9 +81,10 @@ router.get("/api/:idTutor/students", async (req,res)=>{
   let students = await UserModel.find({role: "student"});
   students.forEach(student => {
     var hiredTutors = student.hiredTutors;
-    hiredTutors.forEach(_idTutor => {
+    hiredTutors.forEach(async _idTutor => {
       if (_idTutor === idTutor) {
-        listStudents.push(modelGenerator.toStudentObject(student));
+        const temp = await modelGenerator.toStudentObject(student);
+        listStudents.push(temp);
       }
     })
   })
@@ -94,9 +95,10 @@ router.get("/api/:idStudent/tutors", async (req,res)=>{
   let { idStudent } = req.params;
   let listTutors = [];
   let student = await UserModel.findOne({_id: idStudent});
-  student.hiredTutors.forEach(idTutor => {
+  student.hiredTutors.forEach(async idTutor => {
     const tutor =  TutorModel.findOne({_id: idTutor});
-    listTutors.push(modelGenerator.toTutorObject(tutor));
+    const temp = await modelGenerator.toTutorObject(tutor);
+    listTutors.push(temp);
   })
   res.json(listStudents);
 })
