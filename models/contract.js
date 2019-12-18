@@ -8,12 +8,12 @@ const contractSchema = mongoose.Schema({
     startDate: Date,
     endDate: Date,
     createdDate: Date,
-    hoursNumber: Number,
     policy: String,
+    hoursNumber: Number,
     totalPrice: Number,
     revenue: Number,
     message: String,
-    status: Array
+    status: String
 });
 
 module.exports = mongoose.model('contract', contractSchema);

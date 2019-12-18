@@ -29,8 +29,8 @@ router.get("/student/:idTutor", async (req, res) => {
 });
 
 router.post("/insert", async (req, res) => {
-    let { _idStudent, _idTutor, _idSubject, startDate, endDate, policy, totalPrice, revenue, message, status }  = req.body;
-    var contract = modelGenerator.createContract(_idStudent, _idTutor, _idSubject, startDate, endDate, policy, totalPrice, revenue, message, status);
+    let { _idStudent, _idTutor, _idSubject, startDate, endDate, createdDate, policy, hoursNumber, totalPrice, revenue, message, status }  = req.body;
+    var contract = modelGenerator.createContract(_idStudent, _idTutor, _idSubject, startDate, endDate, createdDate, policy, hoursNumber, totalPrice, revenue, message, status);
     res.json(contract);
 })
 
