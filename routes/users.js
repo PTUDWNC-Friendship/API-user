@@ -3,6 +3,7 @@ const router = express.Router();
 const UserModel = require("../models/user");
 const StudentModel = require("../models/student");
 const TutorModel = require("../models/tutor");
+const SubjectModel = require("../models/subject");
 const mongoose = require("mongoose");
 const constant = require("../utils/constant");
 const bcrypt = require("bcrypt");
@@ -89,6 +90,20 @@ router.get("/api/:idTutor/students", async (req,res)=>{
   })
   res.json(listStudents);
 })
+
+router.get("/tutor/:idTutor/subjects",async  (req,res)=>{
+  let { idTutor } = req.params;
+  var listSubjects = [];
+  let tutor = await TutorModel.findOne({_id: idTutor});
+  const listSubjectsId = tutor.subjects;
+  for(var item of listSubjectsId) {
+    console.log('id', item);
+    let subject = await SubjectModel.findOne({_id: item});
+    listSubjects.push(subject);
+  }
+  res.json(listSubjects);
+})
+
 
 router.get("/api/:idStudent/tutors", async (req,res)=>{
   let { idStudent } = req.params;
