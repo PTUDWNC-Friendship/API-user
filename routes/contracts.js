@@ -19,7 +19,18 @@ router.get("/api/:id", async (req, res) => {
 router.get("/tutor/:idStudent", async (req, res) => {
     let { idStudent } = req.params;
     let list = await ContractModel.find({_idStudent: idStudent});
-    res.json(list);
+
+    let listResult =[];
+    for(var item of list) {
+      const tutor = await UserModel.findOne({_id: item._idTutor});
+      const resultItem = {
+        ...item._doc,
+        tutor: {...tutor._doc}
+      }
+      
+      listResult.push(resultItem);
+    }
+    res.json(listResult);
 });
 
 router.get("/student/:idTutor", async (req, res) => {
