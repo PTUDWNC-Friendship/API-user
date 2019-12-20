@@ -5,6 +5,7 @@ const contractSchema = mongoose.Schema({
     _idStudent: mongoose.Schema.Types.ObjectId,
     _idTutor: mongoose.Schema.Types.ObjectId,
     _idSubject: mongoose.Schema.Types.ObjectId,
+    _idFeedback: mongoose.Schema.Types.ObjectId,
     startDate: Date,
     endDate: Date,
     createdDate: Date,

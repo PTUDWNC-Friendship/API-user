@@ -23,7 +23,7 @@ router.get("/:idStudent", async (req, res) => {
 
 router.post("/insert", async (req, res) => {
     let { _idStudent, rate, comment }  = req.body;
-    var feedback = modelGenerator.FeedbackModel(_idStudent, rate, comment);
+    var feedback = modelGenerator.createFeedback(_idStudent, rate, comment);
     res.json(feedback);
 })
 
