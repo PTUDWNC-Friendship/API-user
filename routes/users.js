@@ -13,6 +13,7 @@ const jwtExtension = require("jsonwebtoken");
 const passport = require("passport");
 const url = require("url");
 const nodemailer = require("nodemailer");
+const passwordGenerator = require('generate-password');
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -190,14 +191,14 @@ router.post("/verify", async (req, res) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "friendshiphcmus@gmail.com",
-        pass: "ibhihydepzrajmid"
+        user: constant.USERNAME_EMAIL,
+        pass: constant.PASSWORD_EMAIL
       }
     });
     var mainOptions = {
       from: "UberForTutor",
       to: username,
-      subject: "Confirm Account UberForTutor",
+      subject: "[UberForTutor] - CONFIRM ACCOUNT",
       html: `Please click the link to confirm: <a href="${url}">${url}</a>
       <p>The link was expired in 24h.</p>`
     };
@@ -206,6 +207,49 @@ router.post("/verify", async (req, res) => {
         res.json(error);
       } else {
         console.log("Message sent: " + info.response);
+        res.json({ message: "Email was sent! Please open your mail to confirm account (Check you Spam Mailbox if you can't see in Inbox)" });
+      }
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+router.post("/forgotpassword", async (req, res) => {
+  const { username } = req.body;
+  const saltRounds = 10;
+
+  try {
+    const user = await UserModel.findOne({username: username});
+    const rawPassword = passwordGenerator.generate({
+      length: 8,
+      uppercase: false,
+      numbers: true
+    });
+    console.log("TCL: newPassword", newPassword);
+    var hashPassword = await bcrypt.hash(rawPassword, saltRounds);
+    user.password = hashPassword;
+    
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: constant.USERNAME_EMAIL,
+        pass: constant.PASSWORD_EMAIL
+      }
+    });
+    var mainOptions = {
+      from: "UberForTutor",
+      to: username,
+      subject: "[UberForTutor] - RESET YOUR PASSWORD",
+      html: `Please click the link to confirm: <a href="${url}">${url}</a>
+      <p>The link was expired in 24h.</p>`
+    };
+    transporter.sendMail(mainOptions, function(error, info) {
+      if (error) {
+        res.json(error);
+      } else {
+        console.log("Message sent: " + info.response);
+        user.save().catch(err => console.log(err));
         res.json({ message: "Email was sent! Please open your mail to confirm account (Check you Spam Mailbox if you can't see in Inbox)" });
       }
     });

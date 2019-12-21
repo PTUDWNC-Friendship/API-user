@@ -1,6 +1,8 @@
 module.exports = {
     CONNECTION_STRING: "mongodb+srv://friendship:kDllZNT6IEIo2xIJ@friendship-1qqi8.gcp.mongodb.net/UberForTutor?retryWrites=true&w=majority",
     JWT_SECRET: process.env.JWT_SECRET || "jwt_secret",
+    USERNAME_EMAIL: 'friendshiphcmus@gmail.com',
+    PASSWORD_EMAIL: 'ibhihydepzrajmid',
     EMAIL_SECRET: "email_secret",
     GOOGLE_CLIENT_ID: "752056726969-tajtbefnaliv75v9p8pto23a1mv30mjh.apps.googleusercontent.com",
     GOOGLE_CLIENT_SECRET: "zgD7-4HvRrL6z2mLXBlc7q5O",
