@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ContractModel = require('../models/contract');
 const SubjectModel = require('../models/subject');
+const FeedbackModel = require('../models/feedback');
 const UserModel = require('../models/user');
 const modelGenerator = require("../utils/model-generator");
 
@@ -23,13 +24,27 @@ router.get("/tutor/:idStudent", async (req, res) => {
     let listResult =[];
     for(var item of list) {
       const tutor = await UserModel.findOne({_id: item._idTutor});
-      const resultItem = {
-        ...item._doc,
-        tutor: {...tutor._doc}
+      let feedback = null;
+      if(item._idFeedback!==null) {
+         feedback = await FeedbackModel.findOne({_id: item._idFeedback});
+
       }
-      
+      if(feedback!==null) {
+        const resultItem = {
+            ...item._doc,
+            tutor: {...tutor._doc},
+            feedback: {...feedback._doc}
+          }
+                
+      listResult.push(resultItem);
+      } else {
+        const resultItem = {
+            ...item._doc,
+            tutor: {...tutor._doc}
+      }    
       listResult.push(resultItem);
     }
+}
     res.json(listResult);
 });
 
