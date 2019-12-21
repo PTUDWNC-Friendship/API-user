@@ -45,7 +45,7 @@ const facebook = new FacebookStrategy({
                     return done(null, _user);
                 }
                 else {
-                    let _user = modelGenerator.createUser(emails[0].value, "", firstName, lastName, gender, null, null, "facebook", null, null, photos[0].value, "active");
+                    let _user = modelGenerator.createUser(emails[0].value, "", firstName, lastName, gender, null, null, "facebook", null, null, photos[0].value, "notverified");
                     _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET)};
                     return done(null, _user)                   
                 }
@@ -72,8 +72,9 @@ const google = new GoogleStrategy({
                     return done(null, _user);
                 }
                 else {
-                    let _user = modelGenerator.createUser(emails[0].value, "", name.familyName, name.givenName, "male", null, null, "google", null, null, photos[0].value, "active");          
+                    let _user = modelGenerator.createUser(emails[0].value, "", name.familyName, name.givenName, "male", null, null, "google", null, null, photos[0].value, "notverified");          
                     _user = { ..._user, token: jwtExtension.sign(JSON.stringify(_user), constant.JWT_SECRET) }
+                    console.log(_user);
                     return done(null, _user);
                 }
             })
