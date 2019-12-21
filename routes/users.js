@@ -210,7 +210,7 @@ router.post("/verify", async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    res.json(error);
   }
 });
 
