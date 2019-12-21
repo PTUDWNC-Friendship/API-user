@@ -218,17 +218,18 @@ router.post("/verify", async (req, res) => {
 router.post("/forgotpassword", async (req, res) => {
   const { username } = req.body;
   const saltRounds = 10;
-
+  console.log(req.body);
   try {
-    const user = await UserModel.findOne({username: username});
+    const user = await UserModel.findOne({username, type: 'local'});
     const rawPassword = passwordGenerator.generate({
       length: 8,
       uppercase: false,
       numbers: true
     });
-    console.log("TCL: newPassword", newPassword);
     var hashPassword = await bcrypt.hash(rawPassword, saltRounds);
-    user.password = hashPassword;
+    if (user) {
+      user.password = hashPassword;
+    }
     
     var transporter = nodemailer.createTransport({
       service: "gmail",
@@ -241,8 +242,7 @@ router.post("/forgotpassword", async (req, res) => {
       from: "UberForTutor",
       to: username,
       subject: "[UberForTutor] - RESET YOUR PASSWORD",
-      html: `Please click the link to confirm: <a href="${url}">${url}</a>
-      <p>The link was expired in 24h.</p>`
+      html: `<p>Your password is: <strong>${rawPassword}</strong></p>`
     };
     transporter.sendMail(mainOptions, function(error, info) {
       if (error) {
@@ -250,7 +250,7 @@ router.post("/forgotpassword", async (req, res) => {
       } else {
         console.log("Message sent: " + info.response);
         user.save().catch(err => console.log(err));
-        res.json({ message: "Email was sent! Please open your mail to confirm account (Check you Spam Mailbox if you can't see in Inbox)" });
+        res.json({ message: "Email was sent! Please open your mail to get new password (Check you Spam Mailbox if you can't see in Inbox)" });
       }
     });
   } catch (error) {
