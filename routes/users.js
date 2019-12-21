@@ -380,6 +380,24 @@ router.post("/tutor/insert/subject", async (req, res) => {
   }
 });
 
+router.post("/tutor/delete/subject", async (req, res) => {
+  var { _id, _idSubject } = req.body;
+  var tutor = await TutorModel.findById({ _id: _id });
+
+  if (tutor) {
+    if (tutor.subjects == null) {
+      tutor.subjects = mongoose.Types.Array([]);
+    }
+    tutor.subjects = tutor.subjects.filter(item => item !== _idSubject);
+    tutor
+      .save()
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => console.log(err));
+  }
+});
+
 // ==== GOOGLE ====
 router.get(
   "/google",
