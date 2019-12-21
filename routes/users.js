@@ -12,6 +12,7 @@ const modelGenerator = require("../utils/model-generator");
 const jwtExtension = require("jsonwebtoken");
 const passport = require("passport");
 const url = require("url");
+const nodemailer = require("nodemailer");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -166,7 +167,7 @@ router.post("/register", (req, res) => {
             null,
             null,
             imgURL,
-            "active"
+            "notverified"
           );
           const objectStudent = modelGenerator.toUserObject(user);
           res.send(objectStudent);
@@ -176,6 +177,41 @@ router.post("/register", (req, res) => {
         });
     }
   });
+});
+
+router.post("/verify", async (req, res) => {
+  const { _id, username } = req.body;
+
+  try {
+    const token = jwtExtension
+      .sign(JSON.stringify({ _id: _id }), constant.EMAIL_SECRET)
+    const url = `${req.protocol}://${req.get("host")}/verification/${token}`;
+
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "friendshiphcmus@gmail.com",
+        pass: "ibhihydepzrajmid"
+      }
+    });
+    var mainOptions = {
+      from: "UberForTutor",
+      to: username,
+      subject: "Confirm Account UberForTutor",
+      html: `Please click the link to confirm: <a href="${url}">${url}</a>
+      <p>The link was expired in 24h.</p>`
+    };
+    transporter.sendMail(mainOptions, function(error, info) {
+      if (error) {
+        res.json(error);
+      } else {
+        console.log("Message sent: " + info.response);
+        res.json({ message: "Email was sent! Please open your mail to confirm account (Check you Spam Mailbox if you can't see in Inbox)" });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.post("/student/register", async (req, res) => {
@@ -314,16 +350,17 @@ router.get("/google/redirect", (req, res, next) => {
     { failureRedirect: "/login" },
     (error, user) => {
       if (user) {
+        
         req.login(user, { session: false }, err => {
+          const query = {...user, _id: user._id.toString()};
           if (err) {
             res.send(err);
           }
-          res.redirect(
-            url.format({
-              pathname: `${constant.URL_CLIENT}/login`,
-              query: user
-            })
-          );
+          const redirectURL = url.format({
+            pathname: `${constant.URL_CLIENT}/login`,
+            query: query
+          });
+          res.redirect(redirectURL);
         });
       } else {
         return res.json({ message: "Error occured", error });
@@ -350,15 +387,15 @@ router.get("/facebook/redirect", (req, res, next) => {
     (error, user) => {
       if (user) {
         req.login(user, { session: false }, err => {
+          const query = {...user, _id: user._id.toString()};
           if (err) {
             res.send(err);
           }
-          res.redirect(
-            url.format({
-              pathname: `${constant.URL_CLIENT}/login`,
-              query: user
-            })
-          );
+          const redirectURL = url.format({
+            pathname: `${constant.URL_CLIENT}/login`,
+            query: query
+          });
+          res.redirect(redirectURL);
         });
       } else {
         return res.json({ message: "Error occured", error });

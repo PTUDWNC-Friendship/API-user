@@ -46,7 +46,7 @@ const userSchema = mongoose.Schema({
         type: String,
         require: false
     },
-    activeStatus: {
+    status: {
         type: String,
         require: false
     }
