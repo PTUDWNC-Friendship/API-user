@@ -200,14 +200,14 @@ router.post("/verify", async (req, res) => {
       to: username,
       subject: "[UberForTutor] - CONFIRM ACCOUNT",
       html: `Please click the link to confirm: <a href="${url}">${url}</a>
-      <p>The link was expired in 24h.</p>`
+      <p>The link will be expired in 24h.</p>`
     };
     transporter.sendMail(mainOptions, function(error, info) {
       if (error) {
         res.json(error);
       } else {
         console.log("Message sent: " + info.response);
-        res.json({ message: "Email was sent! Please open your mail to confirm account (Check you Spam Mailbox if you can't see in Inbox)" });
+        res.json({ message: "Email was sent! Please open the verification link in your email! (Check Spam section if you can't find it)" });
       }
     });
   } catch (error) {
@@ -230,7 +230,7 @@ router.post("/forgotpassword", async (req, res) => {
     if (user) {
       user.password = hashPassword;
     }
-    
+
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -412,7 +412,7 @@ router.get("/google/redirect", (req, res, next) => {
     { failureRedirect: "/login" },
     (error, user) => {
       if (user) {
-        
+
         req.login(user, { session: false }, err => {
           const query = {...user, _id: user._id.toString()};
           if (err) {
