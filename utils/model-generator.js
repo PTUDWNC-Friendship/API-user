@@ -119,7 +119,7 @@ module.exports = {
   createFeedback: (_idStudent, rate, comment) => {
     var feedback = new FeedbackModel({
       _id: new mongoose.Types.ObjectId(),
-      _idSubject: _idStudent,
+      _idStudent: _idStudent,
       rate: rate,
       comment: comment
     });
@@ -223,7 +223,7 @@ module.exports = {
       role: student.role,
       bio: student.bio,
       imageURL: student.imageURL,
-      status: student.status,
+      status: student.status
       // hiredTutors: _student.hiredTutors
     };
     return object;
@@ -251,17 +251,13 @@ module.exports = {
     };
     return object;
   },
-  toSubjectObject: _subject => {
-    SubjectModel.findById({ _id: _subject._id }).then(subject => {
-      var object = {
-        _id: subject._id,
-        name: subject.name,
-        category: subject.category,
-        description: subject.description,
-        tags: subject.tags
-      };
-      return object;
-    });
+  toSubjectObject: subject => {
+    return {
+      _id: subject._id,
+      name: subject.name,
+      category: subject.category,
+      description: subject.description
+    };
   },
   toTagObject: _tag => {
     TagModel.findById({ _id: _tag._id }).then(tag => {
@@ -271,5 +267,13 @@ module.exports = {
       };
       return object;
     });
+  },
+  toFeedbackObject: _feedback => {
+    return {
+      _id: _feedback._id,
+      _idStudent: _feedback._idStudent,
+      rate: _feedback.rate,
+      comment: _feedback.comment
+    };
   }
 };
