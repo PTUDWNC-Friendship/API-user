@@ -243,7 +243,7 @@ module.exports = {
       role: _tutor.role,
       bio: _tutor.bio,
       imageURL: _tutor.imageURL,
-      status: _tutor.activeStatus,
+      status: _tutor.status,
       title: tutor.title,
       price: tutor.price,
       subjects: tutor.subjects,
