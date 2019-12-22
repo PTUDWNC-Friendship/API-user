@@ -35,13 +35,13 @@ router.get("/tutor/:idStudent", async (req, res) => {
             tutor: {...tutor._doc},
             feedback: {...feedback._doc}
           }
-                
+
       listResult.push(resultItem);
       } else {
         const resultItem = {
             ...item._doc,
             tutor: {...tutor._doc}
-      }    
+      }
       listResult.push(resultItem);
     }
 }
@@ -51,15 +51,16 @@ router.get("/tutor/:idStudent", async (req, res) => {
 router.get("/student/:idTutor", async (req, res) => {
     let { idTutor } = req.params;
     let list = await ContractModel.find({_idTutor: idTutor});
-    console.log(list);
     let listResult =[];
     for(var item of list) {
       const student = await UserModel.findOne({_id: item._idStudent});
+      const tutor = await UserModel.findOne({_id: item._idTutor});
       const resultItem = {
         ...item._doc,
-        student: {...student._doc}
+        student: {...student._doc},
+        tutor: {...tutor._doc}
       }
-      
+
       listResult.push(resultItem);
     }
     res.json(listResult);
