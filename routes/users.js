@@ -274,7 +274,7 @@ router.post("/tutor/register", async (req, res) => {
   if (user) {
     user.role = "tutor";
     user.save().catch(err => console.log(err));
-    modelGenerator.createTutor(user._id, null, null, null, null);
+    modelGenerator.createTutor(user._id, "", 0, [], []);
     const data = modelGenerator.toUserObject(user);
     res.json(data);
   }
