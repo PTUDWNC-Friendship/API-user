@@ -14,6 +14,10 @@ const tutorSchema = mongoose.Schema({
         type: Array,
         require: false
     },
+    rate: {
+      type: Number,
+      require: true
+    },
     feedback: {
         type: Array,
         require: false
