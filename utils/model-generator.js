@@ -246,6 +246,7 @@ module.exports = {
       status: _tutor.status,
       title: tutor.title,
       price: tutor.price,
+      rate: tutor.rate,
       subjects: tutor.subjects,
       feedback: tutor.feedback
     };
