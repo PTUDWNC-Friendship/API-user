@@ -64,6 +64,19 @@ router.get("/get-all-tutors", async (req,res)=>{
   let result = [];
   for (var tutor of tutors) {
     const temp = await modelGenerator.toTutorObject(tutor);
+
+    const subjects = [];
+    for (var i = 0; i < temp.subjects.length; i+=1)
+    {
+      if (temp.subjects[i] !== '')
+      {
+        let subject = await SubjectModel.findOne({_id: temp.subjects[i]});
+        subjects.push(subject);
+      }
+    }
+    console.log(subjects);
+    temp.subjects = subjects;
+
     result.push(temp);
   }
   res.json(result);
