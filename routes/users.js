@@ -85,8 +85,10 @@ router.get("/get-all-tutors", async (req,res)=>{
     for(let contract of contractTutors) {
       if(contract.status==='finished'&&contract._idFeedback!==null) {
         const feedback = await FeedbackModel.findOne({_id: contract._idFeedback});
-        totalRate +=feedback.rate;
-        amountContract +=1;
+        if(feedback!==null) {
+          totalRate +=feedback.rate;
+          amountContract +=1;
+        }
 
         feedbacks.push(feedback);
       }
