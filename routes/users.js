@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UserModel = require("../models/user");
 const StudentModel = require("../models/student");
+const ContractModel = require("../models/contract");
 const TutorModel = require("../models/tutor");
 const SubjectModel = require("../models/subject");
 const FeedbackModel = require("../models/feedback");
@@ -74,9 +75,22 @@ router.get("/get-all-tutors", async (req,res)=>{
         subjects.push(subject);
       }
     }
-    console.log(subjects);
     temp.subjects = subjects;
-
+    let contractTutors = await ContractModel.find({_idTutor: tutor._id});
+    let totalRate = 0 ;
+    let amountContract = 0;
+    for(let contract of contractTutors) {
+      if(contract.status==='finished'&&contract._idFeedback!==null) {
+        const feedback = await FeedbackModel.findOne({_id: contract._idFeedback});
+        totalRate +=feedback.rate;
+        amountContract +=1;
+      }
+    }
+    if(amountContract>0) {
+      temp.rate = totalRate/amountContract;
+    } else {
+      temp.rate = 0;
+    }
     result.push(temp);
   }
   res.json(result);
