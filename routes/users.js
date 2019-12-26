@@ -67,6 +67,7 @@ router.get("/get-all-tutors", async (req,res)=>{
     const temp = await modelGenerator.toTutorObject(tutor);
 
     const subjects = [];
+    const feedbacks = [];
     for (var i = 0; i < temp.subjects.length; i+=1)
     {
       if (temp.subjects[i] !== '')
@@ -75,6 +76,8 @@ router.get("/get-all-tutors", async (req,res)=>{
         subjects.push(subject);
       }
     }
+
+
     temp.subjects = subjects;
     let contractTutors = await ContractModel.find({_idTutor: tutor._id});
     let totalRate = 0 ;
@@ -84,8 +87,12 @@ router.get("/get-all-tutors", async (req,res)=>{
         const feedback = await FeedbackModel.findOne({_id: contract._idFeedback});
         totalRate +=feedback.rate;
         amountContract +=1;
+
+        feedbacks.push(feedback);
       }
+
     }
+    temp['feedbacks'] = feedbacks;
     if(amountContract>0) {
       temp.rate = totalRate/amountContract;
     } else {
